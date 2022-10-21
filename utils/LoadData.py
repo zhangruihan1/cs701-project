@@ -43,7 +43,9 @@ class VOCDataset(Dataset):
         img_labels = []
         for line in lines:
             fields = line.strip().split()
-            image = fields[0] + '.jpg'
+            image = fields[0]
+            if not image.endswith('.jpg'):
+                image += '.jpg'
             labels = np.zeros((self.num_classes,), dtype=np.float32)
             for i in range(len(fields) - 1):
                 index = int(fields[i + 1])
@@ -138,7 +140,9 @@ class VOCDataset_l2g(Dataset):
         img_labels = []
         for line in lines:
             fields = line.strip().split()
-            image = fields[0] + '.jpg'
+            image = fields[0]
+            if not image.endswith('.jpg'):
+                image += '.jpg'
             labels = np.zeros((self.num_classes,), dtype=np.float32)
             for i in range(len(fields) - 1):
                 index = int(fields[i + 1])
@@ -195,7 +199,9 @@ class VOCDatasetMSF_l2g(Dataset):
         img_labels = []
         for line in lines:
             fields = line.strip().split()
-            image = fields[0] + '.jpg'
+            image = fields[0]
+            if not image.endswith('.jpg'):
+                image += '.jpg'
             labels = np.zeros((self.num_classes,), dtype=np.float32)
             for i in range(len(fields) - 1):
                 index = int(fields[i + 1])
@@ -228,8 +234,10 @@ def train_l2g_sal_data_loader(args, test_path=False, segmentation=False):
                                     transforms.Normalize(mean_vals, std_vals),
                                     ])
 
-    img_train = VOCDataset_l2g_sal(args.train_list, root_dir=args.img_dir, sal_dir=args.sal_dir, input_size=input_size, crop_size=crop_size,
-                                   num_classes=args.num_classes, patch_num=args.patch_num, transform=tsfm_train, test=False)
+    # img_train= VOCDataset_l2g(args.train_list, root_dir=args.img_dir, sal_dir=args.sal_dir, input_size=input_size, crop_size=crop_size,
+                                #    num_classes=args.num_classes, patch_num=args.patch_num, transform=tsfm_train, test=False)
+    img_train = VOCDataset_l2g(args.train_list, root_dir=args.img_dir, input_size=input_size, crop_size=crop_size,
+                              num_classes=args.num_classes, transform=tsfm_test, test=False)
     img_test = VOCDataset_l2g(args.test_list, root_dir=args.img_dir, input_size=input_size, crop_size=crop_size,
                               num_classes=args.num_classes, transform=tsfm_test, test=True)
 
@@ -307,13 +315,15 @@ class VOCDataset_l2g_sal(Dataset):
         img_labels = []
         for line in lines:
             fields = line.strip().split()
-            image = fields[0] + '.jpg'
+            image = fields[0]
+            if not image.endswith('.jpg'):
+                image += '.jpg'
             sal_image = fields[0] + '.png'
             labels = np.zeros((self.num_classes,), dtype=np.float32)
             for i in range(len(fields) - 1):
                 index = int(fields[i + 1])
                 labels[index] = 1.
-            img_name_list.append(os.path.join(data_dir, 'JPEGImages', image))
+            img_name_list.append(os.path.join(data_dir, image))
             sal_name_list.append(os.path.join(data_dir, sal_dir, sal_image))
             img_labels.append(labels)
         return img_name_list, sal_name_list, img_labels  # , np.array(img_labels, dtype=np.float32)
@@ -403,13 +413,15 @@ class VOCDataset_l2g_sal_crop(Dataset):
         img_labels = []
         for line in lines:
             fields = line.strip().split()
-            image = fields[0] + '.jpg'
+            image = fields[0]
+            if not image.endswith('.jpg'):
+                image += '.jpg'
             sal_image = fields[0] + '.png'
             labels = np.zeros((self.num_classes,), dtype=np.float32)
             for i in range(len(fields) - 1):
                 index = int(fields[i + 1])
                 labels[index] = 1.
-            img_name_list.append(os.path.join(data_dir, 'JPEGImages', image))
+            img_name_list.append(os.path.join(data_dir, image))
             sal_name_list.append(os.path.join(data_dir, sal_dir, sal_image))
             img_labels.append(labels)
         return img_name_list, sal_name_list, img_labels  # , np.array(img_labels, dtype=np.float32)
@@ -518,12 +530,14 @@ class VOCDataset_l2g_crop(Dataset):
         img_labels = []
         for line in lines:
             fields = line.strip().split()
-            image = fields[0] + '.jpg'
+            image = fields[0]
+            if not image.endswith('.jpg'):
+                image += '.jpg'
             labels = np.zeros((self.num_classes,), dtype=np.float32)
             for i in range(len(fields) - 1):
                 index = int(fields[i + 1])
                 labels[index] = 1.
-            img_name_list.append(os.path.join(data_dir, 'JPEGImages', image))
+            img_name_list.append(os.path.join(data_dir, image))
             img_labels.append(labels)
         return img_name_list, img_labels  # , np.array(img_labels, dtype=np.float32)
 
@@ -612,7 +626,9 @@ class VOCDatasetMSF_l2g_MP(Dataset):
         img_labels = []
         for line in lines:
             fields = line.strip().split()
-            image = fields[0] + '.jpg'
+            image = fields[0]
+            if not image.endswith('.jpg'):
+                image += '.jpg'
             labels = np.zeros((self.num_classes,), dtype=np.float32)
             for i in range(len(fields) - 1):
                 index = int(fields[i + 1])
