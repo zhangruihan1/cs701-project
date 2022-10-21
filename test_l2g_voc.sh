@@ -3,10 +3,9 @@ EXP=exp_voc
 TYPE=ms
 THR=0.25
 
-CUDA_VISIBLE_DEVICES=1 python3 ./scripts/test_l2g_voc.py \
-    --img_dir=./data/voc12/JPEGImages/ \
-    --test_list=./data/voc12/train_cls.txt \
-    --arch=vgg \
+CUDA_VISIBLE_DEVICES=0 python ./scripts/test_l2g_voc.py \
+    --img_dir=./data/public/val_image/ \
+    --test_list=./data/public/submission/label.txt \
     --batch_size=1 \
     --dataset=pascal_voc \
     --input_size=224 \
@@ -18,8 +17,8 @@ CUDA_VISIBLE_DEVICES=1 python3 ./scripts/test_l2g_voc.py \
     --cam_png=./runs/${EXP}/cam_png/
 
 
-CUDA_VISIBLE_DEVICES=1 python3 scripts/evaluate_mthr_voc.py \
-    --datalist ./data/voc12/train_aug.txt \
-    --gt_dir ./data/voc12/SegmentationClassAug/ \
-    --save_path ./runs/${EXP}/${TYPE}/result.txt \
-    --pred_dir ./runs//${EXP}/${TYPE}/attention/
+# CUDA_VISIBLE_DEVICES=1 python3 scripts/evaluate_mthr_voc.py \
+#     --datalist ./data/voc12/train_aug.txt \
+#     --gt_dir ./data/voc12/SegmentationClassAug/ \
+#     --save_path ./runs/${EXP}/${TYPE}/result.txt \
+#     --pred_dir ./runs//${EXP}/${TYPE}/attention/
