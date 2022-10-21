@@ -244,7 +244,7 @@ def train(args):
                     optimizer.param_groups[0]['lr'], loss_kd, loss_cls_global,
                     loss_cls_local, loss=losses))
 
-        if current_epoch == args.epoch - 1:
+        if current_epoch > 0:
             save_checkpoint(args,
                             {
                                 'epoch': current_epoch,
