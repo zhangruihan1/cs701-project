@@ -195,16 +195,17 @@ def train(args):
                 for g in optimizer.param_groups:
                     g['lr'] *= 100
                 iswarmup = False
-            img, crop_imgs, crop_sals, boxes, label, local_label, img_name = dat
-            crop_sals = crop_sals
+            # img, crop_imgs, crop_sals, boxes, label, local_label, img_name = dat
+            img, crop_imgs, boxes, label, local_label, img_name = dat
+            # crop_sals = crop_sals
             label = label.cuda(non_blocking=True)
             local_label = local_label.cuda(non_blocking=True)
 
             # dealing with batch size
             bs, bxs, c, h, w = crop_imgs.shape
-            _, _, c_s, h_s, w_s = crop_sals.shape
+            # _, _, c_s, h_s, w_s = crop_sals.shape
             crop_imgs = crop_imgs.reshape(bs * bxs, c, h, w)
-            crop_sals = crop_sals.reshape(bs * bxs, c_s, h_s, w_s)
+            # crop_sals = crop_sals.reshape(bs * bxs, c_s, h_s, w_s)
             local_label = local_label.reshape(bs * bxs, args.num_classes)
             box_ind = torch.cat([torch.zeros(4).fill_(i) for i in range(bs)])
             boxes = boxes.reshape(bs * bxs, 5)
@@ -237,9 +238,9 @@ def train(args):
 
             # match the sal label    hyper-parameter
             feat_local_label_bool = (feat_local_label > args.bg_thr).type_as(feat_local_label)
-            crop_sals = F.interpolate(crop_sals, (h, w)).type_as(feat_local_label)
-            feat_local_label[:, :-1, :, :] = feat_local_label_bool[:, :-1, :, :] * crop_sals.repeat(1, args.num_classes, 1, 1)
-            feat_local_label[:, -1, :, :] = feat_local_label[:, -1, :, :] * ((1 - crop_sals).squeeze(1))
+            # crop_sals = F.interpolate(crop_sals, (h, w)).type_as(feat_local_label)
+            # feat_local_label[:, :-1, :, :] = feat_local_label_bool[:, :-1, :, :] * crop_sals.repeat(1, args.num_classes, 1, 1)
+            # feat_local_label[:, -1, :, :] = feat_local_label[:, -1, :, :] * ((1 - crop_sals).squeeze(1))
 
             # roi align
             feat_aligned = ops.roi_align(feat, boxes, (h, w), 1 / 8.0)

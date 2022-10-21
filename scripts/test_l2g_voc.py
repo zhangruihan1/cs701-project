@@ -36,8 +36,9 @@ def get_resnet38_model(args):
     model_name = "models.resnet38"
     print(model_name)
     model = getattr(importlib.import_module(model_name), 'Net')(args)
-
-    pretrained_dict = torch.load(args.restore_from)['state_dict']
+    
+    pretrained_dict = torch.load(args.restore_from, map_location=torch.device('cpu'))['state_dict']
+    print('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh')
     model_dict = model.state_dict()
     pretrained_dict = {k[7:]: v for k, v in pretrained_dict.items() if k[7:] in model_dict.keys()}
     print("Weights cannot be loaded:")
@@ -109,15 +110,18 @@ def validate(args):
                 tensor[key+1] = cam_dict[key]
             tensor[0, :, :] = args.thr
             pred = np.argmax(tensor, axis=0).astype(np.uint8)
+            np.save('predictions/' + img_name[0].split('/')[-1], logits.squeeze().detach().cpu().numpy())
+            print((logits > 0.25).long().cpu().detach())
 
             # save cam
-            if args.cam_npy is not None:
-                np.save(os.path.join(args.cam_npy, im_name + '.npy'), cam_dict)
+            # if args.cam_npy is not None:
+            #     np.save(os.path.join(args.cam_npy, im_name + '.npy'), cam_dict)
 
-            if args.cam_png is not None:
-                cv2.imwrite(os.path.join(args.cam_png, im_name + '.png'), pred)
+            # if args.cam_png is not None:
+            #     cv2.imwrite(os.path.join(args.cam_png, im_name + '.png'), pred)
 
 
 if __name__ == '__main__':
     args = get_arguments()
+    print(torch.cuda.is_available(), 'lllllllllllllllllllllllllllllll')
     validate(args)

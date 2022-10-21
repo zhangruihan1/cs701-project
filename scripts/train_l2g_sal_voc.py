@@ -13,7 +13,7 @@ import models
 from torchvision import ops
 import torch.nn.functional as F
 from utils import AverageMeter
-from utils.LoadData import train_l2g_sal_crop_data_loader
+from utils.LoadData import train_l2g_sal_crop_data_loader, train_l2g_crop_data_loader
 from models import vgg
 import importlib
 import numpy as np
@@ -43,7 +43,7 @@ def get_arguments():
     parser.add_argument("--current_epoch", type=int, default=0)
     parser.add_argument("--att_dir", type=str, default='./runs/exp8/')
     parser.add_argument("--patch_size", type=int, default=4)
-    parser.add_argument("--sal_dir", type=str, default="Sal")
+    # parser.add_argument("--sal_dir", type=str, default="Sal")
     parser.add_argument("--poly_optimizer", action="store_true", default=False)
     parser.add_argument("--load_checkpoint", type=str, default="")
     parser.add_argument("--kd_weights", type=int, default=15)
@@ -137,7 +137,7 @@ def train(args):
     global_counter = args.global_counter
     current_epoch = args.current_epoch
 
-    train_loader, val_loader = train_l2g_sal_crop_data_loader(args)
+    train_loader, val_loader = train_l2g_crop_data_loader(args)
     max_step = total_epoch * len(train_loader)
     args.max_step = max_step
     print('Max step:', max_step)
@@ -158,16 +158,16 @@ def train(args):
 
         flag = 0
         for idx, dat in enumerate(train_loader):
-            img, crop_imgs, crop_sals, boxes, label, local_label, img_name = dat
-            crop_sals = crop_sals
+            img, crop_imgs, boxes, label, local_label, img_name = dat
+            # crop_sals = crop_sals
             label = label.cuda(non_blocking=True)
             local_label = local_label.cuda(non_blocking=True)
 
             # dealing with batch size
             bs, bxs, c, h, w = crop_imgs.shape
-            _, _, c_s, h_s, w_s = crop_sals.shape
+            # _, _, c_s, h_s, w_s = crop_sals.shape
             crop_imgs = crop_imgs.reshape(bs * bxs, c, h, w)
-            crop_sals = crop_sals.reshape(bs * bxs, c_s, h_s, w_s)
+            # crop_sals = crop_sals.reshape(bs * bxs, c_s, h_s, w_s)
             local_label = local_label.reshape(bs * bxs, args.num_classes)
             box_ind = torch.cat([torch.zeros(args.patch_size).fill_(i) for i in range(bs)])
             boxes = boxes.reshape(bs * bxs, 5)
@@ -199,9 +199,9 @@ def train(args):
 
             # match the sal label    hyper-parameter
             feat_local_label_bool = (feat_local_label > args.bg_thr).type_as(feat_local_label)
-            crop_sals = F.interpolate(crop_sals, (h, w)).type_as(feat_local_label)
-            feat_local_label[:, :-1, :, :] = feat_local_label_bool[:, :-1, :, :] * crop_sals.repeat(1, 20, 1, 1)
-            feat_local_label[:, -1, :, :] = feat_local_label_bool[:, -1, :, :] * ((1 - crop_sals).squeeze(1))
+            # crop_sals = F.interpolate(crop_sals, (h, w)).type_as(feat_local_label)
+            # feat_local_label[:, :-1, :, :] = feat_local_label_bool[:, :-1, :, :] * crop_sals.repeat(1, 20, 1, 1)
+            # feat_local_label[:, -1, :, :] = feat_local_label_bool[:, -1, :, :] * ((1 - crop_sals).squeeze(1))
 
             # roi align
             feat_aligned = ops.roi_align(feat, boxes, (h, w), 1 / 8.0)
