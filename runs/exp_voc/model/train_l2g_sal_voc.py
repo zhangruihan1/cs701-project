@@ -143,7 +143,6 @@ def train(args):
     print('Max step:', max_step)
 
     model, model_local, optimizer, criterion = get_resnet38_model(args)
-    # model.load_state_dict(torch.load())
     print(model)
     model.train()
     model_local.train()
