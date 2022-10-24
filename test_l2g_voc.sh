@@ -18,7 +18,7 @@ THR=0.25
 
 CUDA_VISIBLE_DEVICES=0 python ./scripts/test_l2g_voc.py \
     --img_dir=../cs701/public/val_image/ \
-    --test_list=../cs701/public/submission/label.txt \
+    --test_list=../cs701/public/submission/label_.txt \
     --batch_size=1 \
     --dataset=pascal_voc \
     --input_size=224 \
