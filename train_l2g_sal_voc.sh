@@ -31,5 +31,6 @@ CUDA_VISIBLE_DEVICES=0,1 python3 ./scripts/${RUN_FILE} \
     --decay_points='5' \
     --kd_weights=10 \
     --bg_thr=0.001
+    --load_checkpoint="./runs/public_pretrained.pth" \
     # --load_checkpoint="./runs/${EXP}/model/pascal_voc_epoch_9.pth" \
     # --current_epoch=10
