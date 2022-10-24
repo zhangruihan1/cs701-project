@@ -143,6 +143,7 @@ def train(args):
     print('Max step:', max_step)
 
     model, model_local, optimizer, criterion = get_resnet38_model(args)
+    # model.load_state_dict(torch.load())
     print(model)
     model.train()
     model_local.train()
@@ -243,7 +244,7 @@ def train(args):
                     optimizer.param_groups[0]['lr'], loss_kd, loss_cls_global,
                     loss_cls_local, loss=losses))
 
-        if current_epoch == args.epoch - 1:
+        if current_epoch > 0:
             save_checkpoint(args,
                             {
                                 'epoch': current_epoch,
